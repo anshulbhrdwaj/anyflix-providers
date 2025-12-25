@@ -2,9 +2,9 @@ import { FeatureMap, flags } from '@/entrypoint/utils/targets';
 import { Stream } from '@/providers/streams';
 
 // Default proxy URL for general purpose proxying
-const DEFAULT_PROXY_URL = 'https://proxy.nsbx.ru/proxy';
+const DEFAULT_PROXY_URL = 'https://anyflix-proxy.auralytics-in.workers.dev';
 // Default M3U8 proxy URL for HLS stream proxying
-let CONFIGURED_M3U8_PROXY_URL = 'https://proxy.pstream.mov';
+let CONFIGURED_M3U8_PROXY_URL = 'https://anyflix-proxy.auralytics-in.workers.dev';
 
 /**
  * Set a custom M3U8 proxy URL to use for all M3U8 proxy requests
@@ -72,16 +72,20 @@ export function setupProxy(stream: Stream): Stream {
  * @returns The proxied M3U8 URL or original URL if local proxy is available
  */
 export function createM3U8ProxyUrl(url: string, features?: FeatureMap, headers: Record<string, string> = {}): string {
-  // If we have features and local proxy is available (no CORS restrictions), return original URL
-  // The stream headers will handle the proxying through the extension/native environment
+  const hasHeaders = Object.keys(headers).length > 0;
+  const encodedUrl = encodeURIComponent(url);
+
+  if (hasHeaders) {
+    return `${CONFIGURED_M3U8_PROXY_URL}/m3u8-proxy?url=${encodedUrl}&headers=${encodeURIComponent(
+      JSON.stringify(headers),
+    )}&depth=1`;
+  }
+
   if (features && !features.requires.includes(flags.CORS_ALLOWED)) {
     return url;
   }
 
-  // Otherwise, use the external M3U8 proxy
-  const encodedUrl = encodeURIComponent(url);
-  const encodedHeaders = encodeURIComponent(JSON.stringify(headers));
-  return `${CONFIGURED_M3U8_PROXY_URL}/m3u8-proxy?url=${encodedUrl}${headers ? `&headers=${encodedHeaders}` : ''}`;
+  return `${CONFIGURED_M3U8_PROXY_URL}/m3u8-proxy?url=${encodedUrl}&depth=1`;
 }
 
 /**

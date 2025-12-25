@@ -92,6 +92,7 @@ import { turbovidSourceScraper } from './sources/turbovid';
 import { vidapiClickScraper } from './sources/vidapiclick';
 import { vidifyScraper } from './sources/vidify';
 import vidnestScraper from './sources/vidnest';
+import { vidrockScraper } from './sources/vidrock';
 import { warezcdnScraper } from './sources/warezcdn';
 import { wecimaScraper } from './sources/wecima';
 import { zunimeScraper } from './sources/zunime';
@@ -128,6 +129,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     rgshowsScraper,
     vidifyScraper,
     zunimeScraper,
+    vidrockScraper,
     vidnestScraper,
     animetsuScraper,
     lookmovieScraper,
