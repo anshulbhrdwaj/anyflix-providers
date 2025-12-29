@@ -2,7 +2,7 @@ import { flags } from '@/entrypoint/utils/targets';
 import { makeSourcerer } from '@/providers/base';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 
-const backendUrl = 'https://second.vidnest.fun';
+const backendUrl = 'https://backend.vidnest.fun';
 
 const servers = ['hollymoviehd', 'allmovies'];
 
