@@ -156,6 +156,7 @@ export const vidnestBetaEmbed = makeEmbed({
 
     const streamHeaders = {
       Referer: 'https://videostr.net/',
+      Origin: 'https://videostr.net/',
     };
 
     return {
@@ -243,6 +244,7 @@ export const vidnestGamaEmbed = makeEmbed({
 
     const streamHeaders = {
       Referer: 'https://videostr.net/',
+      Origin: 'https://videostr.net/',
     };
 
     return {
