@@ -4,7 +4,7 @@ import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 
 const backendUrl = 'https://backend.vidnest.fun';
 
-const servers = ['hollymoviehd', 'allmovies'];
+const servers = ['hollymoviehd', 'rogflix'];
 
 async function scrape(ctx: MovieScrapeContext | ShowScrapeContext, type: 'movie' | 'tv') {
   const embeds = [];
