@@ -1,7 +1,7 @@
 // import { alphaScraper, deltaScraper } from '@/providers/embeds/nsbx';
 // import { astraScraper, novaScraper, orionScraper } from '@/providers/embeds/whvx';
 import { bombtheirishScraper } from '@/providers/archive/sources/bombtheirish';
-import { vidnestAlfaEmbed } from '@/providers/embeds/vidnest';
+import { vidnestAlfaEmbed, vidnestBetaEmbed, vidnestGamaEmbed } from '@/providers/embeds/vidnest';
 import { warezcdnembedMp4Scraper } from '@/providers/embeds/warezcdn/mp4';
 import { Stream } from '@/providers/streams';
 import { IndividualEmbedRunnerOptions } from '@/runners/individualRunner';
@@ -10,6 +10,8 @@ import { ProviderRunnerOptions } from '@/runners/runner';
 const SKIP_VALIDATION_CHECK_IDS = [
   warezcdnembedMp4Scraper.id,
   vidnestAlfaEmbed.id,
+  vidnestBetaEmbed.id,
+  vidnestGamaEmbed.id,
   // deltaScraper.id,
   // alphaScraper.id,
   // novaScraper.id,
@@ -21,6 +23,8 @@ const UNPROXIED_VALIDATION_CHECK_IDS = [
   // sources here are always proxied, so we dont need to validate with a proxy
   bombtheirishScraper.id, // this one is dead, but i'll keep it here for now
   vidnestAlfaEmbed.id,
+  vidnestBetaEmbed.id,
+  vidnestGamaEmbed.id,
 ];
 
 export function isValidStream(stream: Stream | undefined): boolean {

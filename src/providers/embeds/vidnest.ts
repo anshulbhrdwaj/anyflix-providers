@@ -6,6 +6,12 @@ import { createM3U8ProxyUrl } from '@/utils/proxy';
 
 const PASSPHRASE = 'T8c8PQlSQVU4mBuW4CbE/g57VBbM5009QHd+ym93aZZ5pEeVpToY6OdpYPvRMVYp';
 
+const vidnestHeaders = {
+  Origin: 'https://vidnest.fun',
+  Referer: 'https://vidnest.fun/',
+  'User-Agent': '	Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:146.0) Gecko/20100101 Firefox/146.0',
+};
+
 async function decryptVidnestData(encryptedBase64: string): Promise<any> {
   const encryptedBytes = Uint8Array.from(atob(encryptedBase64), (c) => c.charCodeAt(0));
   const iv = encryptedBytes.slice(0, 12);
@@ -34,6 +40,7 @@ export const vidnestLamdaEmbed = makeEmbed({
   disabled: false,
   async scrape(ctx) {
     const response = await ctx.proxiedFetcher<any>(ctx.url);
+    // console.log(response);
     if (!response.data) throw new NotFoundError('No encrypted data found');
 
     const decryptedData = await decryptVidnestData(response.data);
@@ -66,6 +73,7 @@ export const vidnestAlfaEmbed = makeEmbed({
   disabled: false,
   async scrape(ctx) {
     const response = await ctx.proxiedFetcher<any>(ctx.url);
+    // console.log(response);
     if (!response.data) throw new NotFoundError('No encrypted data found');
 
     const decryptedData = await decryptVidnestData(response.data);
@@ -86,16 +94,14 @@ export const vidnestAlfaEmbed = makeEmbed({
     if (!validSources.length) throw new NotFoundError('Alfa: No valid sources found');
 
     const streams: HlsBasedStream[] = [];
-    const streamHeaders = {
-      Referer: 'https://primevid.click/',
-    };
+    const streamHeaders = vidnestHeaders;
 
     for (const source of validSources) {
       const isM3U8 =
         !source.url.includes('.txt') &&
         (source.isM3U8 === true || source.url.includes('.m3u8') || source.url.includes('/hls/'));
 
-      const finalUrl = isM3U8 ? createM3U8ProxyUrl(source.url, ctx.features, streamHeaders) : source.url;
+      const finalUrl = createM3U8ProxyUrl(source.url, ctx.features, streamHeaders);
 
       streams.push({
         id: `alfa-${source.quality || 'auto'}`,
@@ -135,6 +141,7 @@ export const vidnestBetaEmbed = makeEmbed({
   disabled: false,
   async scrape(ctx) {
     const response = await ctx.proxiedFetcher<any>(ctx.url);
+    // console.log(response);
     if (!response.data) throw new NotFoundError('No encrypted data found');
 
     const decryptedData = await decryptVidnestData(response.data);
@@ -175,6 +182,7 @@ export const vidnestSigmaEmbed = makeEmbed({
   disabled: false,
   async scrape(ctx) {
     const response = await ctx.proxiedFetcher<any>(ctx.url);
+    // console.log(response);
     if (!response.data) throw new NotFoundError('No encrypted data found');
 
     const decryptedData = await decryptVidnestData(response.data);
@@ -220,6 +228,7 @@ export const vidnestGamaEmbed = makeEmbed({
   disabled: false,
   async scrape(ctx) {
     const response = await ctx.proxiedFetcher<any>(ctx.url);
+    // console.log(response);
     if (!response.data) throw new NotFoundError('No encrypted data found');
 
     const decryptedData = await decryptVidnestData(response.data);
@@ -260,6 +269,7 @@ export const vidnestCatflixEmbed = makeEmbed({
   disabled: false,
   async scrape(ctx) {
     const response = await ctx.proxiedFetcher<any>(ctx.url);
+    // console.log(response);
     if (!response.data) throw new NotFoundError('No encrypted data found');
 
     const decryptedData = await decryptVidnestData(response.data);
@@ -297,6 +307,7 @@ export const vidnestHexaEmbed = makeEmbed({
   disabled: false,
   async scrape(ctx) {
     const response = await ctx.proxiedFetcher<any>(ctx.url);
+    // console.log(response);
     if (!response.data) throw new NotFoundError('No encrypted data found');
 
     const decryptedData = await decryptVidnestData(response.data);
@@ -325,6 +336,7 @@ export const vidnestDeltaEmbed = makeEmbed({
   disabled: false,
   async scrape(ctx) {
     const response = await ctx.proxiedFetcher<any>(ctx.url);
+    // console.log(response);
     if (!response.data) throw new NotFoundError('No encrypted data found');
 
     const decryptedData = await decryptVidnestData(response.data);
