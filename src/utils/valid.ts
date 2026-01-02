@@ -1,7 +1,13 @@
 // import { alphaScraper, deltaScraper } from '@/providers/embeds/nsbx';
 // import { astraScraper, novaScraper, orionScraper } from '@/providers/embeds/whvx';
 import { bombtheirishScraper } from '@/providers/archive/sources/bombtheirish';
-import { vidnestAlfaEmbed, vidnestBetaEmbed, vidnestGamaEmbed, vidnestSigmaEmbed } from '@/providers/embeds/vidnest';
+import {
+  vidnestAlfaEmbed,
+  vidnestBetaEmbed,
+  vidnestDeltaEmbed,
+  vidnestGamaEmbed,
+  vidnestSigmaEmbed,
+} from '@/providers/embeds/vidnest';
 import { warezcdnembedMp4Scraper } from '@/providers/embeds/warezcdn/mp4';
 import { Stream } from '@/providers/streams';
 import { IndividualEmbedRunnerOptions } from '@/runners/individualRunner';
@@ -13,6 +19,7 @@ const SKIP_VALIDATION_CHECK_IDS = [
   vidnestBetaEmbed.id,
   vidnestGamaEmbed.id,
   vidnestSigmaEmbed.id,
+  vidnestDeltaEmbed.id,
   // deltaScraper.id,
   // alphaScraper.id,
   // novaScraper.id,
@@ -27,6 +34,7 @@ const UNPROXIED_VALIDATION_CHECK_IDS = [
   vidnestBetaEmbed.id,
   vidnestGamaEmbed.id,
   vidnestSigmaEmbed.id,
+  vidnestDeltaEmbed.id,
 ];
 
 export function isValidStream(stream: Stream | undefined): boolean {
