@@ -9,7 +9,8 @@ const PASSPHRASE = 'T8c8PQlSQVU4mBuW4CbE/g57VBbM5009QHd+ym93aZZ5pEeVpToY6OdpYPvR
 const vidnestHeaders = {
   Origin: 'https://vidnest.fun',
   Referer: 'https://vidnest.fun/',
-  'User-Agent': '	Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:146.0) Gecko/20100101 Firefox/146.0',
+  'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:146.0) Gecko/20100101 Firefox/146.0',
+  'X-Requested-With': 'XMLHttpRequest',
 };
 
 async function decryptVidnestData(encryptedBase64: string): Promise<any> {
@@ -39,8 +40,11 @@ export const vidnestLamdaEmbed = makeEmbed({
   flags: [flags.CORS_ALLOWED],
   disabled: false,
   async scrape(ctx) {
-    const response = await ctx.proxiedFetcher<any>(ctx.url);
-    // console.log(response);
+    const response = await ctx.proxiedFetcher<any>(ctx.url, {
+      headers: vidnestHeaders,
+    });
+    // console.log('Lamda Response:', response);
+
     if (!response.data) throw new NotFoundError('No encrypted data found');
 
     const decryptedData = await decryptVidnestData(response.data);
@@ -72,8 +76,10 @@ export const vidnestAlfaEmbed = makeEmbed({
   flags: [],
   disabled: false,
   async scrape(ctx) {
-    const response = await ctx.proxiedFetcher<any>(ctx.url);
-    // console.log(response);
+    const response = await ctx.proxiedFetcher<any>(ctx.url, {
+      headers: vidnestHeaders,
+    });
+
     if (!response.data) throw new NotFoundError('No encrypted data found');
 
     const decryptedData = await decryptVidnestData(response.data);
@@ -113,7 +119,6 @@ export const vidnestAlfaEmbed = makeEmbed({
       } as HlsBasedStream);
     }
 
-    // Sort: .txt files first, then IP addresses last
     streams.sort((a, b) => {
       const aIsTxt = a.playlist.includes('.txt');
       const bIsTxt = b.playlist.includes('.txt');
@@ -140,8 +145,10 @@ export const vidnestBetaEmbed = makeEmbed({
   flags: [],
   disabled: false,
   async scrape(ctx) {
-    const response = await ctx.proxiedFetcher<any>(ctx.url);
-    // console.log(response);
+    const response = await ctx.proxiedFetcher<any>(ctx.url, {
+      headers: vidnestHeaders,
+    });
+
     if (!response.data) throw new NotFoundError('No encrypted data found');
 
     const decryptedData = await decryptVidnestData(response.data);
@@ -182,8 +189,10 @@ export const vidnestSigmaEmbed = makeEmbed({
   flags: [],
   disabled: false,
   async scrape(ctx) {
-    const response = await ctx.proxiedFetcher<any>(ctx.url);
-    // console.log(response);
+    const response = await ctx.proxiedFetcher<any>(ctx.url, {
+      headers: vidnestHeaders,
+    });
+
     if (!response.data) throw new NotFoundError('No encrypted data found');
 
     const decryptedData = await decryptVidnestData(response.data);
@@ -228,8 +237,10 @@ export const vidnestGamaEmbed = makeEmbed({
   flags: [],
   disabled: false,
   async scrape(ctx) {
-    const response = await ctx.proxiedFetcher<any>(ctx.url);
-    // console.log(response);
+    const response = await ctx.proxiedFetcher<any>(ctx.url, {
+      headers: vidnestHeaders,
+    });
+
     if (!response.data) throw new NotFoundError('No encrypted data found');
 
     const decryptedData = await decryptVidnestData(response.data);
@@ -270,8 +281,11 @@ export const vidnestCatflixEmbed = makeEmbed({
   flags: [flags.CORS_ALLOWED],
   disabled: false,
   async scrape(ctx) {
-    const response = await ctx.proxiedFetcher<any>(ctx.url);
-    // console.log(response);
+    const response = await ctx.proxiedFetcher<any>(ctx.url, {
+      headers: vidnestHeaders,
+    });
+    // console.log('Catflix Response:', response);
+
     if (!response.data) throw new NotFoundError('No encrypted data found');
 
     const decryptedData = await decryptVidnestData(response.data);
@@ -308,8 +322,11 @@ export const vidnestHexaEmbed = makeEmbed({
   flags: [flags.CORS_ALLOWED],
   disabled: false,
   async scrape(ctx) {
-    const response = await ctx.proxiedFetcher<any>(ctx.url);
-    // console.log(response);
+    const response = await ctx.proxiedFetcher<any>(ctx.url, {
+      headers: vidnestHeaders,
+    });
+    // console.log('Hexa Response:', response);
+
     if (!response.data) throw new NotFoundError('No encrypted data found');
 
     const decryptedData = await decryptVidnestData(response.data);
@@ -337,8 +354,10 @@ export const vidnestDeltaEmbed = makeEmbed({
   flags: [flags.CORS_ALLOWED],
   disabled: false,
   async scrape(ctx) {
-    const response = await ctx.proxiedFetcher<any>(ctx.url);
-    // console.log(response);
+    const response = await ctx.proxiedFetcher<any>(ctx.url, {
+      headers: vidnestHeaders,
+    });
+
     if (!response.data) throw new NotFoundError('No encrypted data found');
 
     const decryptedData = await decryptVidnestData(response.data);
