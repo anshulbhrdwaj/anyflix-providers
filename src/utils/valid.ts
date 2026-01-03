@@ -6,6 +6,7 @@ import {
   vidnestBetaEmbed,
   vidnestDeltaEmbed,
   vidnestGamaEmbed,
+  vidnestLamdaEmbed,
   vidnestSigmaEmbed,
 } from '@/providers/embeds/vidnest';
 import { warezcdnembedMp4Scraper } from '@/providers/embeds/warezcdn/mp4';
@@ -20,6 +21,7 @@ const SKIP_VALIDATION_CHECK_IDS = [
   vidnestGamaEmbed.id,
   vidnestSigmaEmbed.id,
   vidnestDeltaEmbed.id,
+  vidnestLamdaEmbed.id,
   // deltaScraper.id,
   // alphaScraper.id,
   // novaScraper.id,
@@ -35,6 +37,7 @@ const UNPROXIED_VALIDATION_CHECK_IDS = [
   vidnestGamaEmbed.id,
   vidnestSigmaEmbed.id,
   vidnestDeltaEmbed.id,
+  vidnestLamdaEmbed.id,
 ];
 
 export function isValidStream(stream: Stream | undefined): boolean {
