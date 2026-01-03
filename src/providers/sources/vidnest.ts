@@ -17,33 +17,33 @@ const servers = [
     tvUrl: 'primesrc/tv',
     movieUrl: 'primesrc/movie',
   },
-  // {
-  //   server: 'beta',
-  //   tvUrl: 'flixhq/tv',
-  //   movieUrl: 'flixhq/movie',
-  //   params: { server: 'upcloud' },
-  // },
+  {
+    server: 'beta',
+    tvUrl: 'flixhq/tv',
+    movieUrl: 'flixhq/movie',
+    params: { server: 'upcloud' },
+  },
   {
     server: 'sigma',
     tvUrl: 'hollymoviehd/tv',
     movieUrl: 'hollymoviehd/movie',
   },
-  // {
-  //   server: 'gama',
-  //   tvUrl: 'flixhq/tv',
-  //   movieUrl: 'flixhq/movie',
-  //   params: { server: 'megacloud' },
-  // },
-  // {
-  //   server: 'catflix',
-  //   tvUrl: 'catflix/tv',
-  //   movieUrl: 'catflix/movie',
-  // },
-  // {
-  //   server: 'hexa',
-  //   tvUrl: 'superstream/tv',
-  //   movieUrl: 'superstream/movie',
-  // },
+  {
+    server: 'gama',
+    tvUrl: 'flixhq/tv',
+    movieUrl: 'flixhq/movie',
+    params: { server: 'megacloud' },
+  },
+  {
+    server: 'catflix',
+    tvUrl: 'catflix/tv',
+    movieUrl: 'catflix/movie',
+  },
+  {
+    server: 'hexa',
+    tvUrl: 'superstream/tv',
+    movieUrl: 'superstream/movie',
+  },
   {
     server: 'delta',
     tvUrl: 'rogflix/tv',
@@ -67,13 +67,13 @@ async function scrape(ctx: MovieScrapeContext | ShowScrapeContext) {
     }
 
     // Append query parameters if they exist
-    // if (server.params && Object.keys(server.params).length > 0) {
-    //   const parsedUrl = new URL(url);
-    //   for (const [key, value] of Object.entries(server.params)) {
-    //     parsedUrl.searchParams.set(key, value);
-    //   }
-    //   url = parsedUrl.toString();
-    // }
+    if (server.params && Object.keys(server.params).length > 0) {
+      const parsedUrl = new URL(url);
+      for (const [key, value] of Object.entries(server.params)) {
+        parsedUrl.searchParams.set(key, value);
+      }
+      url = parsedUrl.toString();
+    }
 
     embeds.push({
       embedId: `vidnest-${server.server}`,
