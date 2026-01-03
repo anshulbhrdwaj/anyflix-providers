@@ -142,17 +142,14 @@ export const vidnestBetaEmbed = makeEmbed({
   id: 'vidnest-beta',
   name: 'Vidnest Beta',
   rank: 107,
-  flags: [],
+  flags: [flags.CORS_ALLOWED],
   disabled: false,
   async scrape(ctx) {
-    const response = await ctx.proxiedFetcher<any>(ctx.url, {
-      headers: vidnestHeaders,
-    });
-
+    const response = await ctx.proxiedFetcher<any>(ctx.url);
     if (!response.data) throw new NotFoundError('No encrypted data found');
 
     const decryptedData = await decryptVidnestData(response.data);
-    if (!decryptedData?.url) throw new NotFoundError('FlixHQ: missing url');
+    if (!decryptedData?.url) throw new NotFoundError('Beta: missing url');
 
     const subtitles = (decryptedData.subtitles || []).map((s: any) => ({
       url: s.url,
@@ -163,13 +160,58 @@ export const vidnestBetaEmbed = makeEmbed({
 
     const streamHeaders = {
       Referer: 'https://videostr.net/',
-      Origin: 'https://videostr.net/',
+      Origin: 'https://videostr.net',
+      'User-Agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
     };
 
     return {
       stream: [
         {
           id: 'beta-auto',
+          type: 'hls',
+          playlist: createM3U8ProxyUrl(decryptedData.url, ctx.features, streamHeaders),
+          flags: [],
+          captions: subtitles,
+          headers: streamHeaders,
+        } as HlsBasedStream,
+      ],
+    };
+  },
+});
+
+// Gama embed (FlixHQ with megacloud server)
+export const vidnestGamaEmbed = makeEmbed({
+  id: 'vidnest-gama',
+  name: 'Vidnest Gama',
+  rank: 109,
+  flags: [flags.CORS_ALLOWED],
+  disabled: false,
+  async scrape(ctx) {
+    const response = await ctx.proxiedFetcher<any>(ctx.url);
+    if (!response.data) throw new NotFoundError('No encrypted data found');
+
+    const decryptedData = await decryptVidnestData(response.data);
+    if (!decryptedData?.url) throw new NotFoundError('Gama: missing url');
+
+    const subtitles = (decryptedData.subtitles || []).map((s: any) => ({
+      url: s.url,
+      lang: s.lang || 'Unknown',
+      label: s.label || 'Unknown',
+      default: !!s.default,
+    }));
+
+    const streamHeaders = {
+      Referer: 'https://videostr.net/',
+      Origin: 'https://videostr.net',
+      'User-Agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    };
+
+    return {
+      stream: [
+        {
+          id: 'gama-auto',
           type: 'hls',
           playlist: createM3U8ProxyUrl(decryptedData.url, ctx.features, streamHeaders),
           flags: [],
@@ -222,50 +264,6 @@ export const vidnestSigmaEmbed = makeEmbed({
           playlist: createM3U8ProxyUrl(hlsSources[0].file, ctx.features, streamHeaders),
           flags: [],
           captions: [],
-          headers: streamHeaders,
-        } as HlsBasedStream,
-      ],
-    };
-  },
-});
-
-// Gama embed (FlixHQ with megacloud server)
-export const vidnestGamaEmbed = makeEmbed({
-  id: 'vidnest-gama',
-  name: 'Vidnest Gama',
-  rank: 109,
-  flags: [],
-  disabled: false,
-  async scrape(ctx) {
-    const response = await ctx.proxiedFetcher<any>(ctx.url, {
-      headers: vidnestHeaders,
-    });
-
-    if (!response.data) throw new NotFoundError('No encrypted data found');
-
-    const decryptedData = await decryptVidnestData(response.data);
-    if (!decryptedData?.url) throw new NotFoundError('FlixHQ: missing url');
-
-    const subtitles = (decryptedData.subtitles || []).map((s: any) => ({
-      url: s.url,
-      lang: s.lang || 'Unknown',
-      label: s.label || 'Unknown',
-      default: !!s.default,
-    }));
-
-    const streamHeaders = {
-      Referer: 'https://videostr.net/',
-      Origin: 'https://videostr.net/',
-    };
-
-    return {
-      stream: [
-        {
-          id: 'gama-auto',
-          type: 'hls',
-          playlist: createM3U8ProxyUrl(decryptedData.url, ctx.features, streamHeaders),
-          flags: [],
-          captions: subtitles,
           headers: streamHeaders,
         } as HlsBasedStream,
       ],
