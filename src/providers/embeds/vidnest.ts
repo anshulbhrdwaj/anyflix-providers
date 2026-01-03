@@ -32,6 +32,39 @@ async function decryptVidnestData(encryptedBase64: string): Promise<any> {
   }
 }
 
+async function createFlixHQStream(decryptedData: any, embedId: string, ctx: any): Promise<HlsBasedStream> {
+  const subtitles = (decryptedData.subtitles || []).map((s: any) => ({
+    url: s.url,
+    lang: s.lang || 'Unknown',
+    label: s.label || 'Unknown',
+    default: !!s.default,
+  }));
+
+  // Method 1: Double proxy (recommended)
+  const firstProxyHeaders = {
+    Referer: 'https://videostr.net/',
+  };
+
+  const firstProxyUrl = `https://proxy2.aether.mom/proxy?url=${encodeURIComponent(
+    decryptedData.url,
+  )}&headers=${encodeURIComponent(JSON.stringify(firstProxyHeaders))}`;
+
+  const finalStreamHeaders = {
+    Referer: 'https://vidnest.fun',
+    Origin: 'https://vidnest.fun',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+  };
+
+  return {
+    id: `${embedId}-auto`,
+    type: 'hls',
+    playlist: createM3U8ProxyUrl(firstProxyUrl, ctx.features, finalStreamHeaders),
+    flags: [],
+    captions: subtitles,
+    headers: finalStreamHeaders,
+  } as HlsBasedStream;
+}
+
 // Lamda embed - English streams (uses rogflix backend)
 export const vidnestLamdaEmbed = makeEmbed({
   id: 'vidnest-lamda',
@@ -137,7 +170,7 @@ export const vidnestAlfaEmbed = makeEmbed({
   },
 });
 
-// Beta embed (FlixHQ with upcloud server)
+// Beta embed
 export const vidnestBetaEmbed = makeEmbed({
   id: 'vidnest-beta',
   name: 'Vidnest Beta',
@@ -151,36 +184,12 @@ export const vidnestBetaEmbed = makeEmbed({
     const decryptedData = await decryptVidnestData(response.data);
     if (!decryptedData?.url) throw new NotFoundError('Beta: missing url');
 
-    const subtitles = (decryptedData.subtitles || []).map((s: any) => ({
-      url: s.url,
-      lang: s.lang || 'Unknown',
-      label: s.label || 'Unknown',
-      default: !!s.default,
-    }));
-
-    const streamHeaders = {
-      Referer: 'https://videostr.net/',
-      Origin: 'https://videostr.net',
-      'User-Agent':
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    };
-
-    return {
-      stream: [
-        {
-          id: 'beta-auto',
-          type: 'hls',
-          playlist: createM3U8ProxyUrl(decryptedData.url, ctx.features, streamHeaders),
-          flags: [],
-          captions: subtitles,
-          headers: streamHeaders,
-        } as HlsBasedStream,
-      ],
-    };
+    const stream = await createFlixHQStream(decryptedData, 'beta', ctx);
+    return { stream: [stream] };
   },
 });
 
-// Gama embed (FlixHQ with megacloud server)
+// Gama embed
 export const vidnestGamaEmbed = makeEmbed({
   id: 'vidnest-gama',
   name: 'Vidnest Gama',
@@ -194,32 +203,8 @@ export const vidnestGamaEmbed = makeEmbed({
     const decryptedData = await decryptVidnestData(response.data);
     if (!decryptedData?.url) throw new NotFoundError('Gama: missing url');
 
-    const subtitles = (decryptedData.subtitles || []).map((s: any) => ({
-      url: s.url,
-      lang: s.lang || 'Unknown',
-      label: s.label || 'Unknown',
-      default: !!s.default,
-    }));
-
-    const streamHeaders = {
-      Referer: 'https://videostr.net/',
-      Origin: 'https://videostr.net',
-      'User-Agent':
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    };
-
-    return {
-      stream: [
-        {
-          id: 'gama-auto',
-          type: 'hls',
-          playlist: createM3U8ProxyUrl(decryptedData.url, ctx.features, streamHeaders),
-          flags: [],
-          captions: subtitles,
-          headers: streamHeaders,
-        } as HlsBasedStream,
-      ],
-    };
+    const stream = await createFlixHQStream(decryptedData, 'gama', ctx);
+    return { stream: [stream] };
   },
 });
 
