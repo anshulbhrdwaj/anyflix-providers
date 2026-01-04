@@ -87,6 +87,7 @@ import { embedsuScraper } from './sources/embedsu';
 import { fullhdfilmizleScraper } from './sources/fullhdfilmizle';
 import { hdRezkaScraper } from './sources/hdrezka';
 import { lookmovieScraper } from './sources/lookmovie';
+// import { m4ufreeScraper } from './sources/m4ufree';
 import { movies4fScraper } from './sources/movies4f';
 import { myanimeScraper } from './sources/myanime';
 import { nunflixScraper } from './sources/nunflix';
@@ -100,6 +101,7 @@ import { streamboxScraper } from './sources/streambox';
 import { turbovidSourceScraper } from './sources/turbovid';
 import { vidapiClickScraper } from './sources/vidapiclick';
 import { vidifyScraper } from './sources/vidify';
+import { vidlinkScraper } from './sources/vidlink';
 import vidnestScraper from './sources/vidnest';
 import { vidrockScraper } from './sources/vidrock';
 import { warezcdnScraper } from './sources/warezcdn';
@@ -149,6 +151,8 @@ export function gatherAllSources(): Array<Sourcerer> {
     debridScraper,
     cinehdplusScraper,
     fullhdfilmizleScraper,
+    // m4ufreeScraper,
+    vidlinkScraper,
   ];
 }
 
