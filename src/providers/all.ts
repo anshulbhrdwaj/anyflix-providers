@@ -247,7 +247,6 @@ export function gatherAllEmbeds(): Array<Embed> {
     videasyOmenEmbed,
     videasyBreachEmbed,
     videasyVyseEmbed,
-    videasyYoruEmbed,
     videasyKilljoyEmbed,
     videasyHarborEmbed,
     videasyChamberEmbed,
