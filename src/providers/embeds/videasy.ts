@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+// /* eslint-disable no-console */
 import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 import { HlsBasedStream } from '@/providers/streams';
@@ -15,7 +15,7 @@ const HEADERS = {
 };
 
 async function getDecryptedData(ctx: any, encryptedUrl: string): Promise<any> {
-  console.log(`\n[Videasy] 1. Fetching encrypted data from: ${encryptedUrl}`);
+  // console.log(`\n[Videasy] 1. Fetching encrypted data from: ${encryptedUrl}`);
 
   const encryptedRes = await ctx.proxiedFetcher.full(encryptedUrl, {
     headers: HEADERS,
@@ -36,7 +36,7 @@ async function getDecryptedData(ctx: any, encryptedUrl: string): Promise<any> {
     throw new NotFoundError('TMDB ID missing in URL');
   }
 
-  console.log(`[Videasy] 2. Sending to Decryption API (TMDB: ${tmdbId})`);
+  // console.log(`[Videasy] 2. Sending to Decryption API (TMDB: ${tmdbId})`);
 
   const decryptRes = await ctx.proxiedFetcher.full(DECRYPT_API, {
     method: 'POST',
@@ -81,7 +81,7 @@ function makeVideasyEmbed(serverId: string, serverName: string, rank: number) {
       try {
         const decryptedData = await getDecryptedData(ctx, ctx.url);
 
-        console.log('[Videasy] Decrypted Payload:', JSON.stringify(decryptedData, null, 2));
+        // console.log('[Videasy] Decrypted Payload:', JSON.stringify(decryptedData, null, 2));
 
         let sources: any[] = [];
 
@@ -113,7 +113,7 @@ function makeVideasyEmbed(serverId: string, serverName: string, rank: number) {
         }
 
         const streamUrl = validStream.url || validStream.file;
-        console.log(`[Videasy] Found stream: ${streamUrl}`);
+        // console.log(`[Videasy] Found stream: ${streamUrl}`);
 
         // Handle subtitles (checking 'subtitles' array from logs, fallback to 'tracks')
         const subtitles = (decryptedData.subtitles || decryptedData.tracks || []).map((t: any) => ({
@@ -122,13 +122,15 @@ function makeVideasyEmbed(serverId: string, serverName: string, rank: number) {
           label: t.label || t.lang || t.language || 'Unknown',
         }));
 
+        const proxiedUrl = createM3U8ProxyUrl(streamUrl, ctx.features, HEADERS);
+        // console.log(proxiedUrl);
         return {
           stream: [
             {
               id: `videasy-${serverId}-auto`,
               type: 'hls',
               // Use Proxy to ensure headers are attached
-              playlist: createM3U8ProxyUrl(streamUrl, ctx.features, HEADERS),
+              playlist: proxiedUrl,
               flags: [flags.CORS_ALLOWED],
               captions: subtitles,
               headers: HEADERS,
