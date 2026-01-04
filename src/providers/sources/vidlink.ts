@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { flags } from '@/entrypoint/utils/targets';
 import { Caption } from '@/providers/captions';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
@@ -27,7 +26,7 @@ async function comboScraper(ctx: MovieScrapeContext | ShowScrapeContext): Promis
 
   const encrypted = encryptResponse.result;
 
-  console.log('Encrypted ID:', encrypted);
+  // console.log('Encrypted ID:', encrypted);
 
   // Build vidlink API URL
   const apiUrl =
@@ -35,7 +34,7 @@ async function comboScraper(ctx: MovieScrapeContext | ShowScrapeContext): Promis
       ? `https://vidlink.pro/api/b/movie/${encrypted}`
       : `https://vidlink.pro/api/b/tv/${encrypted}/${ctx.media.season.number}/${ctx.media.episode.number}`;
 
-  console.log('API URL:', apiUrl);
+  // console.log('API URL:', apiUrl);
 
   // Fetch from vidlink API with proper headers
   let apiResponse = await ctx.proxiedFetcher<any>(apiUrl, {
@@ -47,11 +46,11 @@ async function comboScraper(ctx: MovieScrapeContext | ShowScrapeContext): Promis
     apiResponse = JSON.parse(apiResponse);
   }
 
-  console.log('Full API Response:', JSON.stringify(apiResponse, null, 2));
+  // console.log('Full API Response:', JSON.stringify(apiResponse, null, 2));
 
   // The response already contains a complete stream object
   if (!apiResponse?.stream?.playlist) {
-    console.log('Available keys in response:', Object.keys(apiResponse || {}));
+    // console.log('Available keys in response:', Object.keys(apiResponse || {}));
     throw new NotFoundError('No stream found in response');
   }
 
