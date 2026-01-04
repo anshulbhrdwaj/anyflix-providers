@@ -43,6 +43,25 @@ import {
 } from './embeds/streamwish';
 import { supervideoScraper } from './embeds/supervideo';
 import { vidCloudScraper } from './embeds/vidcloud';
+import {
+  videasyAstraEmbed,
+  videasyBreachEmbed,
+  videasyChamberEmbed,
+  videasyCypherEmbed,
+  videasyFadeEmbed,
+  videasyGekkoEmbed,
+  videasyHarborEmbed,
+  videasyKayoEmbed,
+  videasyKilljoyEmbed,
+  videasyNeonEmbed,
+  videasyOmenEmbed,
+  videasyPhoenixEmbed,
+  videasyRazeEmbed,
+  videasyReynaEmbed,
+  videasySageEmbed,
+  videasyVyseEmbed,
+  videasyYoruEmbed,
+} from './embeds/videasy';
 import { vidhideEnglishScraper, vidhideLatinoScraper, vidhideSpanishScraper } from './embeds/vidhide';
 import { vidifyEmbeds } from './embeds/vidify';
 import {
@@ -100,6 +119,7 @@ import { soaperTvScraper } from './sources/soapertv';
 import { streamboxScraper } from './sources/streambox';
 import { turbovidSourceScraper } from './sources/turbovid';
 import { vidapiClickScraper } from './sources/vidapiclick';
+import { videasyScraper } from './sources/videasy';
 import { vidifyScraper } from './sources/vidify';
 import { vidlinkScraper } from './sources/vidlink';
 import vidnestScraper from './sources/vidnest';
@@ -142,6 +162,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     zunimeScraper,
     vidrockScraper,
     vidnestScraper,
+    videasyScraper,
     animetsuScraper,
     lookmovieScraper,
     turbovidSourceScraper,
@@ -217,6 +238,24 @@ export function gatherAllEmbeds(): Array<Embed> {
     vidnestCatflixEmbed,
     vidnestHexaEmbed,
     vidnestDeltaEmbed,
+    // All Videasy Embeds
+    videasyNeonEmbed,
+    videasySageEmbed,
+    videasyCypherEmbed,
+    videasyYoruEmbed,
+    videasyReynaEmbed,
+    videasyOmenEmbed,
+    videasyBreachEmbed,
+    videasyVyseEmbed,
+    videasyKilljoyEmbed,
+    videasyHarborEmbed,
+    videasyChamberEmbed,
+    videasyFadeEmbed,
+    videasyGekkoEmbed,
+    videasyKayoEmbed,
+    videasyRazeEmbed,
+    videasyPhoenixEmbed,
+    videasyAstraEmbed,
     myanimesubScraper,
     myanimedubScraper,
     filemoonScraper,

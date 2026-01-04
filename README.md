@@ -18,3 +18,6 @@ Visit documentation here: https://providers.pstream.mov/
 ## How to run locally or test my changes
 
 These topics are also covered in the documentation
+
+pnpm cli --source-id videasy --tmdb-id 1311031
+

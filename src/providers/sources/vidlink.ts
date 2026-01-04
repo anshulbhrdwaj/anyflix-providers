@@ -75,7 +75,7 @@ export const vidlinkScraper = makeSourcerer({
   id: 'vidlink',
   name: 'Vidlink',
   rank: 199,
-  disabled: false,
+  disabled: true,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: comboScraper,
   scrapeShow: comboScraper,
