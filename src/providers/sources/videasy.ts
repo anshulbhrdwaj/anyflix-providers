@@ -77,7 +77,7 @@ async function scrape(ctx: MovieScrapeContext | ShowScrapeContext) {
 export const videasyScraper = makeSourcerer({
   id: 'videasy',
   name: 'Videasy',
-  rank: 195, // Adjusted rank slightly
+  rank: 198, // Adjusted rank slightly
   disabled: false,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: (ctx: MovieScrapeContext) => scrape(ctx),
