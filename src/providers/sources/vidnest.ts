@@ -3,7 +3,38 @@ import { flags } from '@/entrypoint/utils/targets';
 import { makeSourcerer } from '@/providers/base';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 
-const backendUrl = 'https://backend.vidnest.fun';
+// Define the potential domains
+const possibleDomains = ['https://second.vidnest.fun', 'https://backend.vidnest.fun'];
+
+// Helper to check if a domain is alive
+async function getWorkingUrl(): Promise<string> {
+  try {
+    // Create a promise for each domain check with a timeout
+    const checkDomain = async (url: string) => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000); // 3-second timeout
+
+      try {
+        await fetch(url, {
+          method: 'HEAD', // Lightweight check
+          signal: controller.signal,
+        });
+        clearTimeout(timeoutId);
+        return url;
+      } catch (error) {
+        clearTimeout(timeoutId);
+        throw error;
+      }
+    };
+
+    // Return the first domain that responds successfully
+    return await Promise.any(possibleDomains.map((domain) => checkDomain(domain)));
+  } catch (error) {
+    // Fallback to the first domain if automatic detection fails entirely
+    console.warn('Vidnest domain check failed, falling back to default.');
+    return possibleDomains[0];
+  }
+}
 
 // Server configurations matching the actual implementation
 const servers = [
@@ -53,6 +84,9 @@ const servers = [
 
 async function scrape(ctx: MovieScrapeContext | ShowScrapeContext) {
   const embeds = [];
+
+  // Auto-detect the working backend URL
+  const backendUrl = await getWorkingUrl();
 
   for (const server of servers) {
     let url = '';
