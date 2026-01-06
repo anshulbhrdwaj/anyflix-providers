@@ -5,7 +5,7 @@ import {
   vidnestAlfaEmbed,
   vidnestBetaEmbed,
   vidnestDeltaEmbed,
-  vidnestGamaEmbed,
+  // vidnestGamaEmbed,
   vidnestLamdaEmbed,
   vidnestSigmaEmbed,
 } from '@/providers/embeds/vidnest';
@@ -18,7 +18,7 @@ const SKIP_VALIDATION_CHECK_IDS = [
   warezcdnembedMp4Scraper.id,
   vidnestAlfaEmbed.id,
   vidnestBetaEmbed.id,
-  vidnestGamaEmbed.id,
+  // vidnestGamaEmbed.id,
   vidnestSigmaEmbed.id,
   vidnestDeltaEmbed.id,
   vidnestLamdaEmbed.id,
@@ -34,7 +34,7 @@ const UNPROXIED_VALIDATION_CHECK_IDS = [
   bombtheirishScraper.id, // this one is dead, but i'll keep it here for now
   vidnestAlfaEmbed.id,
   vidnestBetaEmbed.id,
-  vidnestGamaEmbed.id,
+  // vidnestGamaEmbed.id,
   vidnestSigmaEmbed.id,
   vidnestDeltaEmbed.id,
   vidnestLamdaEmbed.id,
