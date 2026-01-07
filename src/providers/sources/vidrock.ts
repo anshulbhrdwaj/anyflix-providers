@@ -1,4 +1,4 @@
-import { createCipheriv } from 'crypto';
+import CryptoJS from 'crypto-js'; // Universal encryption
 
 import { flags } from '@/entrypoint/utils/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
@@ -18,23 +18,26 @@ const HEADERS = {
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
 };
 
-// --- Encryption Logic (Node Native) ---
+// --- Helper: Universal AES Encryption (CryptoJS) ---
+// Works in Node.js AND Browsers (Passes Vite Build)
 function encryptPayload(payload: string): string {
-  // Key length is 32 characters (256 bits), so we use aes-256-cbc
-  const key = Buffer.from(SECRET_KEY_STRING, 'utf-8');
-  const iv = Buffer.from(SECRET_KEY_STRING.substring(0, 16), 'utf-8');
+  const key = CryptoJS.enc.Utf8.parse(SECRET_KEY_STRING);
+  const iv = CryptoJS.enc.Utf8.parse(SECRET_KEY_STRING.substring(0, 16));
 
-  // Node.js handles PKCS7 padding automatically by default
-  const cipher = createCipheriv('aes-256-cbc', key, iv);
+  const encrypted = CryptoJS.AES.encrypt(payload, key, {
+    iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7,
+  });
 
-  let encrypted = cipher.update(payload, 'utf8', 'base64');
-  encrypted += cipher.final('base64');
+  // Get raw ciphertext in Base64 (equivalent to Node's cipher.final('base64'))
+  const base64 = encrypted.ciphertext.toString(CryptoJS.enc.Base64);
 
   // Convert to URL-Safe Base64
-  return encrypted.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
-// --- Path Generator ---
+// --- Main Encryption Function ---
 const generateEncryptedPath = (
   id: string | number,
   type: 'tv' | 'movie',
@@ -74,7 +77,7 @@ async function scrape(ctx: MovieScrapeContext | ShowScrapeContext): Promise<Sour
     headers: HEADERS,
   });
 
-  if (!response) throw new Error('No response from Vidrock API');
+  if (!response || typeof response !== 'object') throw new Error('No response from Vidrock API');
 
   // 3. Build Streams Array
   const stream: SourcererOutput['stream'] = [];
