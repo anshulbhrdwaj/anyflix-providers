@@ -1,3 +1,5 @@
+import { createCipheriv } from 'crypto';
+
 import { flags } from '@/entrypoint/utils/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
@@ -16,62 +18,34 @@ const HEADERS = {
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
 };
 
-// --- Helper: PKCS7 Padding ---
-// Node's createCipheriv does this automatically. Web Crypto does not.
-function pkcs7Pad(data: Uint8Array): Uint8Array {
-  const blockSize = 16;
-  const padding = blockSize - (data.length % blockSize);
-  const padded = new Uint8Array(data.length + padding);
-  padded.set(data);
-  padded.fill(padding, data.length);
-  return padded;
+// --- Encryption Logic (Node Native) ---
+function encryptPayload(payload: string): string {
+  // Key length is 32 characters (256 bits), so we use aes-256-cbc
+  const key = Buffer.from(SECRET_KEY_STRING, 'utf-8');
+  const iv = Buffer.from(SECRET_KEY_STRING.substring(0, 16), 'utf-8');
+
+  // Node.js handles PKCS7 padding automatically by default
+  const cipher = createCipheriv('aes-256-cbc', key, iv);
+
+  let encrypted = cipher.update(payload, 'utf8', 'base64');
+  encrypted += cipher.final('base64');
+
+  // Convert to URL-Safe Base64
+  return encrypted.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
-// --- Helper: ArrayBuffer to URL-Safe Base64 ---
-function arrayBufferToBase64Url(buffer: ArrayBuffer): string {
-  let binary = '';
-  const bytes = new Uint8Array(buffer);
-  const len = bytes.byteLength;
-  for (let i = 0; i < len; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  // btoa is global in Node.js 16+ and Browsers
-  const base64 = btoa(binary);
-  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-}
-
-// --- Main Encryption Function ---
-const generateEncryptedPath = async (
+// --- Path Generator ---
+const generateEncryptedPath = (
   id: string | number,
   type: 'tv' | 'movie',
   season?: string | number,
   episode?: string | number,
-): Promise<string> => {
+): string => {
   const payload = type === 'tv' ? `${id}_${season}_${episode}` : `${id}`;
-
-  const encoder = new TextEncoder();
-  const keyData = encoder.encode(SECRET_KEY_STRING);
-  const iv = encoder.encode(SECRET_KEY_STRING.substring(0, 16));
-  const data = encoder.encode(payload);
-
-  // 1. Import the key (Casted to BufferSource to satisfy TS)
-  const key = await crypto.subtle.importKey('raw', keyData as BufferSource, { name: 'AES-CBC' }, false, ['encrypt']);
-
-  // 2. Pad the data
-  const paddedData = pkcs7Pad(data);
-
-  // 3. Encrypt (Casted to BufferSource to satisfy TS)
-  const encryptedBuffer = await crypto.subtle.encrypt(
-    { name: 'AES-CBC', iv: iv as BufferSource },
-    key,
-    paddedData as BufferSource,
-  );
-
-  // 4. Convert to URL-safe Base64
-  const urlSafe = arrayBufferToBase64Url(encryptedBuffer);
-
+  const urlSafe = encryptPayload(payload);
   return `${BACKEND_API_URL}/${type}/${urlSafe}`;
 };
+
 // --- Interfaces ---
 interface VidrockSource {
   url: string | null;
@@ -87,12 +61,12 @@ interface VidrockResponse {
 async function scrape(ctx: MovieScrapeContext | ShowScrapeContext): Promise<SourcererOutput> {
   const type = ctx.media.type;
 
-  // 1. Generate encrypted URL (Now Async)
+  // 1. Generate encrypted URL (Synchronous)
   let apiUrl: string;
   if (type === 'movie') {
-    apiUrl = await generateEncryptedPath(ctx.media.tmdbId, 'movie');
+    apiUrl = generateEncryptedPath(ctx.media.tmdbId, 'movie');
   } else {
-    apiUrl = await generateEncryptedPath(ctx.media.tmdbId, 'tv', ctx.media.season.number, ctx.media.episode.number);
+    apiUrl = generateEncryptedPath(ctx.media.tmdbId, 'tv', ctx.media.season.number, ctx.media.episode.number);
   }
 
   // 2. Fetch Data
