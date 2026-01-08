@@ -10,26 +10,26 @@ const servers = [
   { id: 'sage', path: '1movies/sources-with-title', name: 'Sage', lang: 'Original' },
   { id: 'cypher', path: 'moviebox/sources-with-title', name: 'Cypher', lang: 'Original' },
   { id: 'yoru', path: 'cdn/sources-with-title', name: 'Yoru', lang: 'Original', movieOnly: true },
-  { id: 'reyna', path: 'primewire/sources-with-title', name: 'Reyna', lang: 'Original' },
-  { id: 'omen', path: 'onionplay/sources-with-titlequote', name: 'Omen', lang: 'Original' },
-  { id: 'breach', path: 'm4uhd/sources-with-title', name: 'Breach', lang: 'Original' },
-  { id: 'vyse', path: 'hdmovie/sources-with-title', name: 'Vyse', lang: 'Original' },
-  { id: 'killjoy', path: 'meine/sources-with-title', name: 'Killjoy', lang: 'German', params: { language: 'german' } },
-  { id: 'harbor', path: 'meine/sources-with-title', name: 'Harbor', lang: 'Italian', params: { language: 'italian' } },
-  {
-    id: 'chamber',
-    path: 'meine/sources-with-title',
-    name: 'Chamber',
-    lang: 'French',
-    movieOnly: true,
-    params: { language: 'french' },
-  },
   { id: 'fade', path: 'hdmovie/sources-with-title', name: 'Fade', lang: 'Hindi' }, // Note: URL same as Vyse, assuming different internal routing or user preference
-  { id: 'gekko', path: 'cuevana-latino/sources-with-title', name: 'Gekko', lang: 'Latin' },
-  { id: 'kayo', path: 'cuevana-spanish/sources-with-title', name: 'Kayo', lang: 'Spanish' },
-  { id: 'raze', path: 'superflix/sources-with-title', name: 'Raze', lang: 'Portuguese' },
-  { id: 'phoenix', path: 'overflix/sources-with-title', name: 'Phoenix', lang: 'Portuguese' },
-  { id: 'astra', path: 'visioncine/sources-with-title', name: 'Astra', lang: 'Portuguese' },
+  // { id: 'reyna', path: 'primewire/sources-with-title', name: 'Reyna', lang: 'Original' },
+  // { id: 'omen', path: 'onionplay/sources-with-titlequote', name: 'Omen', lang: 'Original' },
+  // { id: 'breach', path: 'm4uhd/sources-with-title', name: 'Breach', lang: 'Original' },
+  // { id: 'vyse', path: 'hdmovie/sources-with-title', name: 'Vyse', lang: 'Original' },
+  // { id: 'killjoy', path: 'meine/sources-with-title', name: 'Killjoy', lang: 'German', params: { language: 'german' } },
+  // { id: 'harbor', path: 'meine/sources-with-title', name: 'Harbor', lang: 'Italian', params: { language: 'italian' } },
+  // {
+  //   id: 'chamber',
+  //   path: 'meine/sources-with-title',
+  //   name: 'Chamber',
+  //   lang: 'French',
+  //   movieOnly: true,
+  //   params: { language: 'french' },
+  // },
+  // { id: 'gekko', path: 'cuevana-latino/sources-with-title', name: 'Gekko', lang: 'Latin' },
+  // { id: 'kayo', path: 'cuevana-spanish/sources-with-title', name: 'Kayo', lang: 'Spanish' },
+  // { id: 'raze', path: 'superflix/sources-with-title', name: 'Raze', lang: 'Portuguese' },
+  // { id: 'phoenix', path: 'overflix/sources-with-title', name: 'Phoenix', lang: 'Portuguese' },
+  // { id: 'astra', path: 'visioncine/sources-with-title', name: 'Astra', lang: 'Portuguese' },
 ];
 
 async function scrape(ctx: MovieScrapeContext | ShowScrapeContext) {
@@ -57,11 +57,11 @@ async function scrape(ctx: MovieScrapeContext | ShowScrapeContext) {
     }
 
     // Add server-specific params (e.g., language flags)
-    if (server.params) {
-      for (const [key, value] of Object.entries(server.params)) {
-        url.searchParams.set(key, value);
-      }
-    }
+    // if (server.params) {
+    //   for (const [key, value] of Object.entries(server.params)) {
+    //     url.searchParams.set(key, value);
+    //   }
+    // }
 
     embeds.push({
       embedId: `videasy-${server.id}`,
