@@ -62,6 +62,13 @@ import {
   videasyVyseEmbed,
   videasyYoruEmbed,
 } from './embeds/videasy';
+import {
+  vidfastAlphaEmbed,
+  vidfastBetaEmbed,
+  vidfastBornEmbed,
+  vidfastOscarEmbed,
+  vidfastVfastEmbed,
+} from './embeds/vidfast';
 import { vidhideEnglishScraper, vidhideLatinoScraper, vidhideSpanishScraper } from './embeds/vidhide';
 import { vidifyEmbeds } from './embeds/vidify';
 import {
@@ -120,6 +127,7 @@ import { streamboxScraper } from './sources/streambox';
 import { turbovidSourceScraper } from './sources/turbovid';
 import { vidapiClickScraper } from './sources/vidapiclick';
 import { videasyScraper } from './sources/videasy';
+import { vidfastScraper } from './sources/vidfast';
 import { vidifyScraper } from './sources/vidify';
 import { vidlinkScraper } from './sources/vidlink';
 import vidnestScraper from './sources/vidnest';
@@ -174,6 +182,7 @@ export function gatherAllSources(): Array<Sourcerer> {
     fullhdfilmizleScraper,
     // m4ufreeScraper,
     vidlinkScraper,
+    vidfastScraper,
   ];
 }
 
@@ -266,5 +275,10 @@ export function gatherAllEmbeds(): Array<Embed> {
     droploadScraper,
     supervideoScraper,
     voeScraper,
+    vidfastOscarEmbed,
+    vidfastAlphaEmbed,
+    vidfastBetaEmbed,
+    vidfastVfastEmbed,
+    vidfastBornEmbed,
   ];
 }
