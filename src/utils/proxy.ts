@@ -1,10 +1,11 @@
 import { FeatureMap, flags } from '@/entrypoint/utils/targets';
 import { Stream } from '@/providers/streams';
 
+// https://anyflix-proxy.auralytics-in.workers.dev
 // Default proxy URL for general purpose proxying
-const DEFAULT_PROXY_URL = 'https://anyflix-proxy.auralytics-in.workers.dev';
+const DEFAULT_PROXY_URL = 'https://proxy.anyflix.fun';
 // Default M3U8 proxy URL for HLS stream proxying
-let CONFIGURED_M3U8_PROXY_URL = 'https://anyflix-proxy.auralytics-in.workers.dev';
+let CONFIGURED_M3U8_PROXY_URL = 'https://proxy.anyflix.fun';
 
 /**
  * Set a custom M3U8 proxy URL to use for all M3U8 proxy requests
