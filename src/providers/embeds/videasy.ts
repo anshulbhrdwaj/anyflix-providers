@@ -1,4 +1,3 @@
-// /* eslint-disable no-console */
 import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 import { HlsBasedStream } from '@/providers/streams';
@@ -15,14 +14,11 @@ const HEADERS = {
 };
 
 async function getDecryptedData(ctx: any, encryptedUrl: string): Promise<any> {
-  // console.log(`\n[Videasy] 1. Fetching encrypted data from: ${encryptedUrl}`);
-
   const encryptedRes = await ctx.proxiedFetcher.full(encryptedUrl, {
     headers: HEADERS,
   });
 
   if (encryptedRes.statusCode !== 200 || !encryptedRes.body) {
-    console.error('[Videasy] Failed to fetch encrypted data');
     throw new NotFoundError('Failed to fetch encrypted data from Videasy');
   }
 
@@ -35,8 +31,6 @@ async function getDecryptedData(ctx: any, encryptedUrl: string): Promise<any> {
   if (!tmdbId) {
     throw new NotFoundError('TMDB ID missing in URL');
   }
-
-  // console.log(`[Videasy] 2. Sending to Decryption API (TMDB: ${tmdbId})`);
 
   const decryptRes = await ctx.proxiedFetcher.full(DECRYPT_API, {
     method: 'POST',
@@ -51,7 +45,6 @@ async function getDecryptedData(ctx: any, encryptedUrl: string): Promise<any> {
   });
 
   if (decryptRes.statusCode !== 200) {
-    console.error(`[Videasy] Decryption API failed with status ${decryptRes.statusCode}`);
     throw new NotFoundError('Decryption API failed');
   }
 
@@ -63,7 +56,6 @@ async function getDecryptedData(ctx: any, encryptedUrl: string): Promise<any> {
       json = decryptRes.body;
     }
   } catch (e) {
-    console.error('[Videasy] Failed to parse decryption response');
     throw new NotFoundError('Failed to parse decryption API response');
   }
 
@@ -78,69 +70,58 @@ function makeVideasyEmbed(serverId: string, serverName: string, rank: number) {
     flags: [flags.CORS_ALLOWED],
     disabled: false,
     async scrape(ctx) {
-      try {
-        const decryptedData = await getDecryptedData(ctx, ctx.url);
+      const decryptedData = await getDecryptedData(ctx, ctx.url);
 
-        // console.log('[Videasy] Decrypted Payload:', JSON.stringify(decryptedData, null, 2));
+      let sources: any[] = [];
 
-        let sources: any[] = [];
-
-        // Prioritize 'url' based on your logs, fallback to 'file'
-        if (decryptedData.sources) {
-          sources = decryptedData.sources;
-        } else if (decryptedData.file) {
-          sources = [{ url: decryptedData.file, label: 'Auto' }];
-        } else if (decryptedData.url) {
-          sources = [{ url: decryptedData.url, label: 'Auto' }];
-        } else if (Array.isArray(decryptedData)) {
-          sources = decryptedData;
-        }
-
-        if (!sources || sources.length === 0) {
-          console.warn(`[Videasy] No sources found for ${serverName}`);
-          throw new NotFoundError('No sources found in decrypted data');
-        }
-
-        const validStream = sources.find((s: any) => {
-          const url = s.url || s.file;
-          if (!url) return false;
-          return url.includes('.m3u8') || s.type === 'hls';
-        });
-
-        if (!validStream) {
-          console.warn(`[Videasy] No valid HLS stream found for ${serverName}.`);
-          throw new NotFoundError('No valid HLS stream found');
-        }
-
-        const streamUrl = validStream.url || validStream.file;
-        // console.log(`[Videasy] Found stream: ${streamUrl}`);
-
-        // Handle subtitles (checking 'subtitles' array from logs, fallback to 'tracks')
-        const subtitles = (decryptedData.subtitles || decryptedData.tracks || []).map((t: any) => ({
-          url: t.url || t.file,
-          lang: t.lang || t.language || t.label || 'Unknown',
-          label: t.label || t.lang || t.language || 'Unknown',
-        }));
-
-        const proxiedUrl = createM3U8ProxyUrl(streamUrl, ctx.features, HEADERS);
-        // console.log(proxiedUrl);
-        return {
-          stream: [
-            {
-              id: `videasy-${serverId}-auto`,
-              type: 'hls',
-              // Use Proxy to ensure headers are attached
-              playlist: proxiedUrl,
-              flags: [flags.CORS_ALLOWED],
-              captions: subtitles,
-              headers: HEADERS,
-            } as HlsBasedStream,
-          ],
-        };
-      } catch (error) {
-        console.error(`[Videasy ${serverName}] Error:`, error);
-        throw error;
+      // Prioritize 'url' based on your logs, fallback to 'file'
+      if (decryptedData.sources) {
+        sources = decryptedData.sources;
+      } else if (decryptedData.file) {
+        sources = [{ url: decryptedData.file, label: 'Auto' }];
+      } else if (decryptedData.url) {
+        sources = [{ url: decryptedData.url, label: 'Auto' }];
+      } else if (Array.isArray(decryptedData)) {
+        sources = decryptedData;
       }
+
+      if (!sources || sources.length === 0) {
+        throw new NotFoundError('No sources found in decrypted data');
+      }
+
+      const validStream = sources.find((s: any) => {
+        const url = s.url || s.file;
+        if (!url) return false;
+        return url.includes('.m3u8') || s.type === 'hls';
+      });
+
+      if (!validStream) {
+        throw new NotFoundError('No valid HLS stream found');
+      }
+
+      const streamUrl = validStream.url || validStream.file;
+
+      // Handle subtitles (checking 'subtitles' array from logs, fallback to 'tracks')
+      const subtitles = (decryptedData.subtitles || decryptedData.tracks || []).map((t: any) => ({
+        url: t.url || t.file,
+        lang: t.lang || t.language || t.label || 'Unknown',
+        label: t.label || t.lang || t.language || 'Unknown',
+      }));
+
+      const proxiedUrl = createM3U8ProxyUrl(streamUrl, ctx.features, HEADERS);
+      return {
+        stream: [
+          {
+            id: `videasy-${serverId}-auto`,
+            type: 'hls',
+            // Use Proxy to ensure headers are attached
+            playlist: proxiedUrl,
+            flags: [flags.CORS_ALLOWED],
+            captions: subtitles,
+            headers: HEADERS,
+          } as HlsBasedStream,
+        ],
+      };
     },
   });
 }
