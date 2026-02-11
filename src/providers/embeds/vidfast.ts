@@ -2,7 +2,6 @@ import { flags } from '@/entrypoint/utils/targets';
 import { makeEmbed } from '@/providers/base';
 import { HlsBasedStream } from '@/providers/streams';
 import { NotFoundError } from '@/utils/errors';
-import { createM3U8ProxyUrl } from '@/utils/proxy';
 
 const BASE_URL = 'https://vidfast.pro';
 
@@ -72,7 +71,7 @@ async function scrapeVidFastEmbed(ctx: any) {
 
   // 2. Generate Proxy URL using STREAM_HEADERS
   // This passes the headers to the proxy, which then passes them to the upstream
-  const proxyUrl = createM3U8ProxyUrl(json.url, ctx.features, STREAM_HEADERS);
+  // const proxyUrl = createM3U8ProxyUrl(json.url, ctx.features, STREAM_HEADERS);
 
   // eslint-disable-next-line no-console
   // console.log('Proxy URL', proxyUrl);
@@ -82,7 +81,7 @@ async function scrapeVidFastEmbed(ctx: any) {
       {
         id: 'primary',
         type: 'hls',
-        playlist: proxyUrl,
+        playlist: json.url,
         headers: STREAM_HEADERS,
         flags: [flags.CORS_ALLOWED],
         captions,

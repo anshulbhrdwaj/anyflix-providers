@@ -3,7 +3,6 @@ import CryptoJS from 'crypto-js'; // Universal encryption
 import { flags } from '@/entrypoint/utils/targets';
 import { SourcererOutput, makeSourcerer } from '@/providers/base';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
-import { createM3U8ProxyUrl } from '@/utils/proxy';
 
 // --- Configuration ---
 const SECRET_KEY_STRING = 'x7k9mPqT2rWvY8zA5bC3nF6hJ2lK4mN9';
@@ -94,7 +93,7 @@ async function scrape(ctx: MovieScrapeContext | ShowScrapeContext): Promise<Sour
     stream.push({
       id: `vidrock-${serverName.toLowerCase()}`,
       type: 'hls',
-      playlist: createM3U8ProxyUrl(data.url, ctx.features, headers),
+      playlist: data.url,
       flags: [flags.CORS_ALLOWED],
       captions: [],
       headers,
@@ -112,6 +111,7 @@ export const vidrockScraper = makeSourcerer({
   id: 'vidrock',
   name: 'Vidrock',
   rank: 202,
+  disabled: true,
   flags: [flags.CORS_ALLOWED],
   scrapeMovie: scrape,
   scrapeShow: scrape,
