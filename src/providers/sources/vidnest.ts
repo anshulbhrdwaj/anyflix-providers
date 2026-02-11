@@ -4,45 +4,51 @@ import { makeSourcerer } from '@/providers/base';
 import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 
 // Define the potential domains
-const possibleDomains = ['https://second.vidnest.fun', 'https://backend.vidnest.fun'];
+const possibleDomains = [
+  'https://new.animanga.fun',
+  'https://one.animanga.fun',
+  'https://first.vidnest.fun',
+  'https://second.vidnest.fun',
+  'https://backend.vidnest.fun',
+];
 
 // Helper to check if a domain is alive
-async function getWorkingUrl(): Promise<string> {
-  try {
-    // Create a promise for each domain check with a timeout
-    const checkDomain = async (url: string) => {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000); // 3-second timeout
+// async function getWorkingUrl(): Promise<string> {
+//   try {
+//     // Create a promise for each domain check with a timeout
+//     const checkDomain = async (url: string) => {
+//       const controller = new AbortController();
+//       const timeoutId = setTimeout(() => controller.abort(), 3000); // 3-second timeout
 
-      try {
-        await fetch(url, {
-          method: 'HEAD', // Lightweight check
-          signal: controller.signal,
-        });
-        clearTimeout(timeoutId);
-        return url;
-      } catch (error) {
-        clearTimeout(timeoutId);
-        throw error;
-      }
-    };
+//       try {
+//         await fetch(url, {
+//           method: 'HEAD', // Lightweight check
+//           signal: controller.signal,
+//         });
+//         clearTimeout(timeoutId);
+//         return url;
+//       } catch (error) {
+//         clearTimeout(timeoutId);
+//         throw error;
+//       }
+//     };
 
-    // Return the first domain that responds successfully
-    return await Promise.any(possibleDomains.map((domain) => checkDomain(domain)));
-  } catch (error) {
-    // Fallback to the first domain if automatic detection fails entirely
-    console.warn('Vidnest domain check failed, falling back to default.');
-    return possibleDomains[0];
-  }
-}
+//     // Return the first domain that responds successfully
+//     return await Promise.any(possibleDomains.map((domain) => checkDomain(domain)));
+//   } catch (error) {
+//     // Fallback to the first domain if automatic detection fails entirely
+//     console.warn('Vidnest domain check failed, falling back to default.');
+//     return possibleDomains[0];
+//   }
+// }
 
 // Server configurations matching the actual implementation
 const servers = [
-  {
-    server: 'lamda',
-    tvUrl: 'rogflix/tv',
-    movieUrl: 'rogflix/movie',
-  },
+  // {
+  //   server: 'lamda',
+  //   tvUrl: 'allmovies/tv',
+  //   movieUrl: 'allmovies/movie',
+  // },
   {
     server: 'sigma',
     tvUrl: 'hollymoviehd/tv',
@@ -50,8 +56,8 @@ const servers = [
   },
   {
     server: 'delta',
-    tvUrl: 'rogflix/tv',
-    movieUrl: 'rogflix/movie',
+    tvUrl: 'allmovies/tv',
+    movieUrl: 'allmovies/movie',
   },
   // {
   //   server: 'alfa',
@@ -87,7 +93,8 @@ async function scrape(ctx: MovieScrapeContext | ShowScrapeContext) {
   const embeds = [];
 
   // Auto-detect the working backend URL
-  const backendUrl = await getWorkingUrl();
+  // const backendUrl = await getWorkingUrl();
+  const backendUrl = possibleDomains[0];
 
   for (const server of servers) {
     let url = '';
