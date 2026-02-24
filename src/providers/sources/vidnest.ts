@@ -5,9 +5,9 @@ import { MovieScrapeContext, ShowScrapeContext } from '@/utils/context';
 
 // Define the potential domains
 const possibleDomains = [
+  'https://new.vidnest.fun',
   'https://new.animanga.fun',
   'https://one.animanga.fun',
-  'https://first.vidnest.fun',
   'https://second.vidnest.fun',
   'https://backend.vidnest.fun',
 ];
